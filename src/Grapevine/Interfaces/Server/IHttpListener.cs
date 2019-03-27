@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net;
+using Mono.Net;
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Permissions;
 
@@ -23,7 +23,7 @@ namespace Grapevine.Interfaces.Server
         /// <summary>
         /// Gets a default list of Service Provider Names (SPNs) as determined by registered prefixes.
         /// </summary>
-        ServiceNameCollection DefaultServiceNames { get; }
+        //ServiceNameCollection DefaultServiceNames { get; }
 
         /// <summary>
         /// Get or set the ExtendedProtectionPolicy to use for extended protection for a session.
@@ -113,9 +113,9 @@ namespace Grapevine.Interfaces.Server
 
     public class HttpListener : IHttpListener
     {
-        protected internal readonly System.Net.HttpListener InnerListener;
+        protected internal readonly Mono.Net.HttpListener InnerListener;
 
-        public HttpListener(System.Net.HttpListener listener)
+        public HttpListener(Mono.Net.HttpListener listener)
         {
             InnerListener = listener;
         }
@@ -132,7 +132,7 @@ namespace Grapevine.Interfaces.Server
             set { InnerListener.AuthenticationSchemeSelectorDelegate = value; }
         }
 
-        public ServiceNameCollection DefaultServiceNames => InnerListener.DefaultServiceNames;
+        //public ServiceNameCollection DefaultServiceNames => InnerListener.DefaultServiceNames;
 
         //public ExtendedProtectionPolicy ExtendedProtectionPolicy
         //{

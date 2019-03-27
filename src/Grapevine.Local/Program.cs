@@ -31,7 +31,7 @@ namespace Grapevine.Local
     [RestResource]
     public class TestResource
     {
-        [RestRoute(HttpMethod = HttpMethod.ALL, PathInfo = "^.*$")]
+        //[RestRoute(HttpMethod = HttpMethod.ALL, PathInfo = "^.*$")]
         public IHttpContext LevelOne(IHttpContext context)
         {
             throw new Exception("Killing It!");

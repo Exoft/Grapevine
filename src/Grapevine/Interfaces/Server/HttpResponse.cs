@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
+using Mono.Net;
 using System.Text;
 using Grapevine.Shared;
 using HttpStatusCode = Grapevine.Shared.HttpStatusCode;
@@ -35,7 +35,7 @@ namespace Grapevine.Interfaces.Server
         /// <summary>
         /// Gets or sets the collection of cookies returned with the response
         /// </summary>
-        CookieCollection Cookies { get; set; }
+        System.Net.CookieCollection Cookies { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of header name/value pairs returned by the server
@@ -93,7 +93,7 @@ namespace Grapevine.Interfaces.Server
         /// Adds the specified Cookie to the collection of cookies for this response
         /// </summary>
         /// <param name="cookie"></param>
-        void AppendCookie(Cookie cookie);
+        void AppendCookie(System.Net.Cookie cookie);
 
         /// <summary>
         /// Appends a value to the specified HTTP header to be sent with this response
@@ -124,7 +124,7 @@ namespace Grapevine.Interfaces.Server
         /// Adds or updates a Cookie in the collection of cookies sent with this response
         /// </summary>
         /// <param name="cookie"></param>
-        void SetCookie(Cookie cookie);
+        void SetCookie(System.Net.Cookie cookie);
     }
 
     public class HttpResponse : IHttpResponse
@@ -200,7 +200,7 @@ namespace Grapevine.Interfaces.Server
             }
         }
 
-        public CookieCollection Cookies
+        public System.Net.CookieCollection Cookies
         {
             get { return Response.Cookies; }
             set { Response.Cookies = value; }
@@ -264,7 +264,7 @@ namespace Grapevine.Interfaces.Server
             Response.AddHeader(name, value);
         }
 
-        public void AppendCookie(Cookie cookie)
+        public void AppendCookie(System.Net.Cookie cookie)
         {
             Response.AppendCookie(cookie);
         }
@@ -284,7 +284,7 @@ namespace Grapevine.Interfaces.Server
             Response.Redirect(url);
         }
 
-        public void SetCookie(Cookie cookie)
+        public void SetCookie(System.Net.Cookie cookie)
         {
             Response.SetCookie(cookie);
         }

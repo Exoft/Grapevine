@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using Mono.Net;
 using System.Security.Authentication.ExtendedProtection;
 using System.Threading;
 using Grapevine.Exceptions.Server;
@@ -82,7 +82,7 @@ namespace Grapevine.Server
 
         public RestServer(IServerSettings options)
         {
-            Listener = new HttpListener(new System.Net.HttpListener());
+            Listener = new HttpListener(new Mono.Net.HttpListener());
             Listening = new Thread(HandleRequests);
             StopEvent = new ManualResetEvent(false);
 

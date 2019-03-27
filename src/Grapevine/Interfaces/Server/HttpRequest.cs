@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Net;
+using Mono.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Grapevine.Shared;
 using System.IO;
+using System.Net;
 
 namespace Grapevine.Interfaces.Server
 {
@@ -207,14 +208,14 @@ namespace Grapevine.Interfaces.Server
         /// <summary>
         /// The underlying HttpListenerRequest for this instance
         /// </summary>
-        protected internal readonly HttpListenerRequest Request;
+        protected internal readonly Mono.Net.HttpListenerRequest Request;
 
         /// <summary>
         /// Provides direct access to selected methods and properties on the internal HttpListenerRequest instance in use; do not used unless you are fully aware of what you are doing and the consequences involved.
         /// </summary>
         public AdvancedHttpRequest Advanced { get; }
 
-        protected internal HttpRequest(HttpListenerRequest request)
+        protected internal HttpRequest(Mono.Net.HttpListenerRequest request)
         {
             Request = request;
             PathInfo = RawUrl.Split(new[] { '?' }, 2)[0];
@@ -337,9 +338,9 @@ namespace Grapevine.Interfaces.Server
     /// </summary>
     public sealed class AdvancedHttpRequest
     {
-        private readonly HttpListenerRequest _request;
+        private readonly Mono.Net.HttpListenerRequest _request;
 
-        internal AdvancedHttpRequest(HttpListenerRequest request)
+        internal AdvancedHttpRequest(Mono.Net.HttpListenerRequest request)
         {
             _request = request;
         }
