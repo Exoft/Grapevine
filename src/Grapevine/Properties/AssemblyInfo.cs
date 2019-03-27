@@ -7,14 +7,14 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Grapevine")]
+[assembly: AssemblyTitle("Exoft.Mono.Grapevine")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("Scott Offen")]
+[assembly: AssemblyCompany("Exoft")]
 [assembly: AssemblyProduct("Grapevine")]
-[assembly: AssemblyVersion("4.1.1.0")]
-[assembly: AssemblyFileVersion("4.1.1.0")]
-[assembly: AssemblyInformationalVersion("4.1.1.0")]
-[assembly: AssemblyCopyright("© 2014-2017 Scott Offen")]
+[assembly: AssemblyVersion("4.2.0.0")]
+[assembly: AssemblyFileVersion("4.2.0.0")]
+[assembly: AssemblyInformationalVersion("4.2.0.0")]
+[assembly: AssemblyCopyright("© 2019 Exoft")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: Guid("f6ac4c2c-4801-465c-8dd4-932dc1890747")]

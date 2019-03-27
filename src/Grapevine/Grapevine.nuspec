@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/Exoft/Grapevine</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/sukona/Grapevine/master/img/grapevine.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Embedding A REST Server In Your Application Should Be Simple</description>
+    <copyright>Copyright 2019</copyright>
+  </metadata>
+</package>
