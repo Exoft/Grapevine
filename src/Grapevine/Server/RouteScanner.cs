@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autofac;
 using Grapevine.Interfaces.Shared;
 using Grapevine.Server.Attributes;
 using Grapevine.Shared.Loggers;
@@ -75,7 +76,7 @@ namespace Grapevine.Server
         /// Generates a list of routes for all RestResource classes found in all assemblies in the current AppDomain
         /// </summary>
         /// <returns>IList&lt;IRoute&gt;</returns>
-        IList<IRoute> Scan();
+        IList<IRoute> Scan(ContainerBuilder containerBuilder);
 
         /// <summary>
         /// Generates a list of routes for all RestResource classes found in the assembly
@@ -136,6 +137,7 @@ namespace Grapevine.Server
         public IGrapevineLogger Logger { get; set; }
 
         public static readonly List<Assembly> Assemblies;
+        private ContainerBuilder _containerBuilder;
 
         static RouteScanner()
         {
@@ -249,8 +251,9 @@ namespace Grapevine.Server
             _scope = scope;
         }
 
-        public IList<IRoute> Scan()
+        public IList<IRoute> Scan(ContainerBuilder containerBuilder)
         {
+            _containerBuilder = containerBuilder;
             var routes = new List<IRoute>();
 
             Logger.Trace("Scanning resources for routes...");
@@ -319,6 +322,9 @@ namespace Grapevine.Server
             {
                 var pathinfo = GeneratePathInfo(attribute.PathInfo, basepath);
                 var route = new Route(method, attribute.HttpMethod, pathinfo);
+
+                _containerBuilder?.RegisterType(method.ReflectedType);
+
                 Logger.Trace($"Generated route {route}");
                 routes.Add(route);
             }

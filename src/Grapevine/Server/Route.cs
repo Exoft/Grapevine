@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Grapevine.Shared;
 using System.Text.RegularExpressions;
+using Autofac;
 using Grapevine.Server.Attributes;
 using Grapevine.Interfaces.Server;
 
@@ -26,7 +27,7 @@ namespace Grapevine.Server
         /// <summary>
         /// Gets the generic delegate that will be run when the route is invoked
         /// </summary>
-        Func<IHttpContext, IHttpContext> Function { get; }
+        Func<IHttpContext, IContainer, IHttpContext> Function { get; }
 
         /// <summary>
         /// Gets the HttpMethod that this route responds to; defaults to HttpMethod.ALL
@@ -55,7 +56,7 @@ namespace Grapevine.Server
         /// </summary>
         /// <param name="context"></param>
         /// <returns>IHttpContext</returns>
-        IHttpContext Invoke(IHttpContext context);
+        IHttpContext Invoke(IHttpContext context, IContainer container);
 
         /// <summary>
         /// Gets a value indicating whether the route matches the given IHttpContext
@@ -76,7 +77,7 @@ namespace Grapevine.Server
 
         public string Description { get; set; }
         public bool Enabled { get; set; }
-        public Func<IHttpContext, IHttpContext> Function { get; }
+        public Func<IHttpContext, IContainer, IHttpContext> Function { get; }
         public HttpMethod HttpMethod { get; }
         public string Name { get; }
         public string PathInfo { get; }
@@ -119,21 +120,21 @@ namespace Grapevine.Server
         /// Creates a route from the given generic delegate; defaults to HttpMethod.All and an empty PathInfo
         /// </summary>
         /// <param name="func"></param>
-        public Route(Func<IHttpContext, IHttpContext> func) : this(func, HttpMethod.ALL, string.Empty) { }
+        public Route(Func<IHttpContext, IContainer, IHttpContext> func) : this(func, HttpMethod.ALL, string.Empty) { }
 
         /// <summary>
         /// Creates a route from the given generic delegate and PathInfo; defaults to HttpMethod.All
         /// </summary>
         /// <param name="func"></param>
         /// <param name="pathInfo"></param>
-        public Route(Func<IHttpContext, IHttpContext> func, string pathInfo) : this(func, HttpMethod.ALL, pathInfo) { }
+        public Route(Func<IHttpContext, IContainer, IHttpContext> func, string pathInfo) : this(func, HttpMethod.ALL, pathInfo) { }
 
         /// <summary>
         /// Creates a route from the given generic delegate and HttpMethod; defaults to an empty PathInfo
         /// </summary>
         /// <param name="func"></param>
         /// <param name="httpMethod"></param>
-        public Route(Func<IHttpContext, IHttpContext> func, HttpMethod httpMethod) : this(func, httpMethod, string.Empty) { }
+        public Route(Func<IHttpContext, IContainer, IHttpContext> func, HttpMethod httpMethod) : this(func, httpMethod, string.Empty) { }
 
         /// <summary>
         /// Creates a route from the given generic delegate, HttpMethod and PathInfo
@@ -141,7 +142,7 @@ namespace Grapevine.Server
         /// <param name="function"></param>
         /// <param name="httpMethod"></param>
         /// <param name="pathInfo"></param>
-        public Route(Func<IHttpContext, IHttpContext> function, HttpMethod httpMethod, string pathInfo) : this(httpMethod, pathInfo)
+        public Route(Func<IHttpContext, IContainer, IHttpContext> function, HttpMethod httpMethod, string pathInfo) : this(httpMethod, pathInfo)
         {
             if (function == null) throw new ArgumentNullException(nameof(function));
             Function = function;
@@ -174,11 +175,11 @@ namespace Grapevine.Server
             MatchesOn = new Dictionary<string, Regex>();
         }
 
-        public IHttpContext Invoke(IHttpContext context)
+        public IHttpContext Invoke(IHttpContext context, IContainer container)
         {
             if (!Enabled) return context;
             context.Request.PathParameters = ParseParams(context.Request.PathInfo);
-            return Function(context);
+            return Function(context, container);
         }
 
         public bool Matches(IHttpContext context)
@@ -250,20 +251,20 @@ namespace Grapevine.Server
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public static Func<IHttpContext, IHttpContext> ConvertMethodToFunc(MethodInfo method)
+        public static Func<IHttpContext, IContainer, IHttpContext> ConvertMethodToFunc(MethodInfo method)
         {
             method.IsRestRouteEligible(true); // throws an aggregate exception if the method is not eligible
 
             // Static method
             if (method.IsStatic || method.ReflectedType == null)
             {
-                return context => (IHttpContext) method.Invoke(null, new object[] {context});
+                return (context, container) => (IHttpContext) method.Invoke(null, new object[] {context});
             }
 
             // Generates new instance every time
-            return context =>
+            return (context, container) =>
             {
-                var instance = Activator.CreateInstance(method.ReflectedType);
+                var instance = container.Resolve(method.ReflectedType);
                 var disposed = false;
                 try
                 {
@@ -315,7 +316,7 @@ namespace Grapevine.Server
                 return new Route(methodInfo, _httpMethod);
             }
 
-            public Route Use(Func<IHttpContext, IHttpContext> function)
+            public Route Use(Func<IHttpContext, IContainer, IHttpContext> function)
             {
                 return new Route(function, _httpMethod);
             }
@@ -325,7 +326,7 @@ namespace Grapevine.Server
                 return new Route(methodInfo, _httpMethod, _pathInfo);
             }
 
-            Route IRouteUseExpression.Use(Func<IHttpContext, IHttpContext> function)
+            Route IRouteUseExpression.Use(Func<IHttpContext, IContainer, IHttpContext> function)
             {
                 return new Route(function, _httpMethod, _pathInfo);
             }
@@ -348,7 +349,7 @@ namespace Grapevine.Server
             /// </summary>
             /// <param name="function"></param>
             /// <returns></returns>
-            Route Use(Func<IHttpContext, IHttpContext> function);
+            Route Use(Func<IHttpContext, IContainer, IHttpContext> function);
         }
     }
 
