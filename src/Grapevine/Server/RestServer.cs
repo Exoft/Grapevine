@@ -86,7 +86,7 @@ namespace Grapevine.Server
             Logger = options.Logger;
             UseHttps = options.UseHttps;
 
-            _dependencyResolver = new ContainerBuilder();
+            _dependencyResolver = options.DependencyResolver;
 
             /* Obsolete */
             Connections = options.Connections;
@@ -196,7 +196,10 @@ namespace Grapevine.Server
             }
         }
 
-        public ContainerBuilder DependencyResolver => _dependencyResolver;
+        public ContainerBuilder DependencyResolver
+        {
+            get { return _dependencyResolver; }
+        }
 
         public void Start()
         {

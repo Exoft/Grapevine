@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using Grapevine.Interfaces.Shared;
 using Grapevine.Shared.Loggers;
 
@@ -27,6 +28,8 @@ namespace Grapevine.Server
         /// Raised when the server stops
         /// </summary>
         event ServerEventHandler BeforeStopping;
+
+        ContainerBuilder DependencyResolver { get; }
 
         /// <summary>
         /// Gets or sets the number of HTTP connection threads maintained per processor; defaults to 50
@@ -150,6 +153,7 @@ namespace Grapevine.Server
         public event ServerEventHandler BeforeStarting;
         public event ServerEventHandler BeforeStopping;
 
+        public ContainerBuilder DependencyResolver { get; private set; }
         public bool EnableThrowingExceptions { get; set; }
 
         public string Host { get; set; }
@@ -170,6 +174,8 @@ namespace Grapevine.Server
             Port = "1234";
             Router = new Router();
             UseHttps = false;
+
+            DependencyResolver = new ContainerBuilder();
         }
 
         public IPublicFolder PublicFolder
